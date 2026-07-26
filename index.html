@@ -116,18 +116,17 @@
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--lav-400);box-shadow:0 0 0 3px var(--lav-100)}
   .row{display:flex;gap:10px}
   .row .field{flex:1}
-  .abbuchenBox{background:var(--lav-50);border:1px solid var(--lav-200);border-radius:12px;padding:12px 14px;margin-top:6px}
-  .abbuchenLbl{font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:8px}
-  .abbuchenLbl span{color:var(--lav-700)}
-  .abbuchenRow{display:flex;gap:8px;align-items:center}
-  .stepBtn{width:42px;height:44px;flex:0 0 auto;border:1px solid var(--lav-200);background:#fff;color:var(--lav-700);
-    border-radius:11px;font-size:1.4rem;line-height:1;cursor:pointer}
+  .abbuchenBox{font-size:.8rem;font-weight:600;color:var(--muted);margin-top:14px}
+  .abbuchenBox span{color:var(--lav-700)}
+  .abStepper{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+  .stepBtn{width:40px;height:46px;flex:0 0 auto;border:1px solid var(--lav-200);background:#fff;color:var(--lav-700);
+    border-radius:11px;font-size:1.3rem;line-height:1;cursor:pointer}
   .stepBtn:active{background:var(--lav-100)}
-  #iAbbuchen{width:64px;flex:0 0 auto;text-align:center;padding:11px 6px;border:1px solid var(--lav-200);
+  #iAbbuchen{width:44px;flex:0 0 auto;text-align:center;padding:11px 4px;border:1px solid var(--lav-200);
     border-radius:11px;font-size:1rem;color:var(--ink);background:#fff;outline:none}
   #iAbbuchen:focus{border-color:var(--lav-400)}
-  .actions{display:flex;gap:10px;margin-top:20px;align-items:center}
-  .spacer{flex:1}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .spacer{flex:1 1 auto;min-width:0}
   .btn{flex:1;padding:13px;border-radius:12px;font-size:1rem;font-weight:600;border:none;cursor:pointer}
   .btn.primary{background:var(--lav-600);color:#fff}
   .btn.primary:active{background:var(--lav-700)}
@@ -229,23 +228,21 @@
       <label>Notiz (optional)</label>
       <textarea id="iNotiz" rows="2" placeholder="z.B. im Keller Regal 2"></textarea>
     </div>
-    <div class="abbuchenBox" id="abbuchenBox" style="display:none">
-      <div class="abbuchenLbl">Menge abbuchen <span id="bestandInfo"></span></div>
-      <div class="abbuchenRow">
+    <div class="abbuchenBox" id="abbuchenBox" style="display:none">Menge abbuchen <span id="bestandInfo"></span></div>
+    <div class="actions">
+      <span class="abStepper" id="abStepper" style="display:none">
         <button type="button" class="stepBtn" id="abMinus" aria-label="weniger">−</button>
         <input id="iAbbuchen" type="number" inputmode="numeric" value="1" min="1" step="1">
         <button type="button" class="stepBtn" id="abPlus" aria-label="mehr">+</button>
-      </div>
-    </div>
-    <div class="actions">
+      </span>
+      <button class="btn iconbtn abbuchen" id="abbuchen" title="Abbuchen" aria-label="Abbuchen" style="display:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </button>
       <button class="btn iconbtn dup" id="dup" title="Duplizieren" aria-label="Duplizieren" style="display:none">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
       </button>
       <button class="btn iconbtn del" id="del" title="Löschen" aria-label="Löschen" style="display:none">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6M14 11v6"/></svg>
-      </button>
-      <button class="btn iconbtn abbuchen" id="abbuchen" title="Abbuchen" aria-label="Abbuchen" style="display:none">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg>
       </button>
       <span class="spacer"></span>
       <button class="btn iconbtn cancel" id="cancel" title="Abbrechen" aria-label="Abbrechen">
@@ -364,6 +361,7 @@ function openSheet(d){
   // Abbuchen nur bei bestehendem Eintrag mit Bestand > 0
   const hatBestand = d && typeof d.menge==="number" && d.menge>0;
   $("#abbuchenBox").style.display = hatBestand ? "block" : "none";
+  $("#abStepper").style.display = hatBestand ? "inline-flex" : "none";
   $("#abbuchen").style.display = hatBestand ? "flex" : "none";
   if(hatBestand){
     $("#bestandInfo").textContent = "(Bestand: "+d.menge+(d.einheit?" "+d.einheit:"")+")";
