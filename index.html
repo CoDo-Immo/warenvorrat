@@ -490,6 +490,11 @@ async function loadData(){
   await loadData();
   fillFilters(); render();
 })();
+
+// Service Worker registrieren (für Installierbarkeit + Offline-Start)
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=> navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
 </script>
 </body>
 </html>
