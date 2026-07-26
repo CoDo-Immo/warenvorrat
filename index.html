@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Warenvorrat Adlemsried</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6f57ad">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
@@ -111,12 +116,34 @@
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--lav-400);box-shadow:0 0 0 3px var(--lav-100)}
   .row{display:flex;gap:10px}
   .row .field{flex:1}
-  .actions{display:flex;gap:10px;margin-top:20px}
+  .abbuchenBox{background:var(--lav-50);border:1px solid var(--lav-200);border-radius:12px;padding:12px 14px;margin-top:6px}
+  .abbuchenLbl{font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:8px}
+  .abbuchenLbl span{color:var(--lav-700)}
+  .abbuchenRow{display:flex;gap:8px;align-items:center}
+  .stepBtn{width:42px;height:44px;flex:0 0 auto;border:1px solid var(--lav-200);background:#fff;color:var(--lav-700);
+    border-radius:11px;font-size:1.4rem;line-height:1;cursor:pointer}
+  .stepBtn:active{background:var(--lav-100)}
+  #iAbbuchen{width:64px;flex:0 0 auto;text-align:center;padding:11px 6px;border:1px solid var(--lav-200);
+    border-radius:11px;font-size:1rem;color:var(--ink);background:#fff;outline:none}
+  #iAbbuchen:focus{border-color:var(--lav-400)}
+  .abbuchenBtn{flex:1;height:44px;display:flex;align-items:center;justify-content:center;
+    background:var(--lav-600);color:#fff;border:none;border-radius:11px;cursor:pointer}
+  .abbuchenBtn:active{background:var(--lav-700)}
+  .actions{display:flex;gap:10px;margin-top:20px;align-items:center}
+  .spacer{flex:1}
   .btn{flex:1;padding:13px;border-radius:12px;font-size:1rem;font-weight:600;border:none;cursor:pointer}
   .btn.primary{background:var(--lav-600);color:#fff}
   .btn.primary:active{background:var(--lav-700)}
   .btn.ghost{background:var(--lav-100);color:var(--lav-700)}
-  .btn.danger{background:#fff;color:#c0392b;border:1px solid #f0c9c4;flex:0 0 auto;padding:13px 16px}
+  .iconbtn{flex:0 0 auto;width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:12px}
+  .iconbtn.dup{background:var(--lav-100);color:var(--lav-700)}
+  .iconbtn.dup:active{background:var(--lav-200)}
+  .iconbtn.del{background:#fdecea;color:#c0392b}
+  .iconbtn.del:active{background:#f8d7d2}
+  .iconbtn.cancel{background:var(--lav-100);color:var(--lav-700)}
+  .iconbtn.cancel:active{background:var(--lav-200)}
+  .iconbtn.save{background:var(--lav-600);color:#fff}
+  .iconbtn.save:active{background:var(--lav-700)}
   .demo-note{
     background:var(--lav-100);color:var(--lav-700);font-size:.75rem;text-align:center;
     padding:8px;border-radius:10px;margin-bottom:14px;
@@ -203,10 +230,31 @@
       <label>Notiz (optional)</label>
       <textarea id="iNotiz" rows="2" placeholder="z.B. im Keller Regal 2"></textarea>
     </div>
+    <div class="abbuchenBox" id="abbuchenBox" style="display:none">
+      <div class="abbuchenLbl">Abbuchen <span id="bestandInfo"></span></div>
+      <div class="abbuchenRow">
+        <button type="button" class="stepBtn" id="abMinus" aria-label="weniger">−</button>
+        <input id="iAbbuchen" type="number" inputmode="numeric" value="1" min="1" step="1">
+        <button type="button" class="stepBtn" id="abPlus" aria-label="mehr">+</button>
+        <button type="button" class="abbuchenBtn" id="abbuchen" title="Abbuchen" aria-label="Abbuchen">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
     <div class="actions">
-      <button class="btn danger" id="del" style="display:none">Löschen</button>
-      <button class="btn ghost" id="cancel">Abbrechen</button>
-      <button class="btn primary" id="save">Speichern</button>
+      <button class="btn iconbtn dup" id="dup" title="Duplizieren" aria-label="Duplizieren" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+      </button>
+      <button class="btn iconbtn del" id="del" title="Löschen" aria-label="Löschen" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+      <span class="spacer"></span>
+      <button class="btn iconbtn cancel" id="cancel" title="Abbrechen" aria-label="Abbrechen">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <button class="btn iconbtn save" id="save" title="Speichern" aria-label="Speichern">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -312,7 +360,17 @@ function openSheet(d){
   $("#iMenge").value = d?d.menge:"";
   $("#iEinheit").value=d?d.einheit:"";
   $("#iNotiz").value = d?d.notiz:"";
-  $("#del").style.display = d?"block":"none";
+  $("#del").style.display = d?"flex":"none";
+  $("#dup").style.display = d?"flex":"none";
+  // Abbuchen nur bei bestehendem Eintrag mit Bestand > 0
+  const hatBestand = d && typeof d.menge==="number" && d.menge>0;
+  $("#abbuchenBox").style.display = hatBestand ? "block" : "none";
+  if(hatBestand){
+    $("#bestandInfo").textContent = "(Bestand: "+d.menge+(d.einheit?" "+d.einheit:"")+")";
+    const ab=$("#iAbbuchen");
+    ab.max = d.menge;
+    ab.value = 1;
+  }
   // Produkt-Vorschläge
   const dl=$("#produktListe");dl.innerHTML="";
   [...new Set(daten.map(x=>x.produkt))].sort().forEach(p=>{const o=document.createElement("option");o.value=p;dl.appendChild(o);});
@@ -349,12 +407,60 @@ $("#save").onclick=async()=>{
 };
 $("#del").onclick=async()=>{
   const id=$("#fId").value;
+  if(!confirm("Diesen Eintrag wirklich löschen?")) return;
   if(sb){
     const {error}=await sb.from("warenvorrat").delete().eq("id",id);
     if(error){ alert("Löschen fehlgeschlagen: "+error.message); return; }
     await loadData();
   } else {
     daten=daten.filter(x=>x.id!=id);
+  }
+  refreshFilters(); render(); closeSheet();
+};
+
+// Abbuchen: Bestand um die gewählte Anzahl reduzieren (max = aktueller Bestand)
+function clampAbbuchen(){
+  const ab=$("#iAbbuchen"); const max=Number(ab.max)||1;
+  let v=Math.floor(Number(ab.value.replace(",","."))||0);
+  if(v<1) v=1; if(v>max) v=max; ab.value=v;
+}
+$("#abMinus").onclick=()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||1)-1; clampAbbuchen(); };
+$("#abPlus").onclick =()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||0)+1; clampAbbuchen(); };
+$("#iAbbuchen").onchange=clampAbbuchen;
+$("#abbuchen").onclick=async()=>{
+  const id=$("#fId").value;
+  const bestand=Number($("#iMenge").value.replace(",","."))||0;
+  clampAbbuchen();
+  const anzahl=Number($("#iAbbuchen").value)||0;
+  if(anzahl<1||anzahl>bestand){ alert("Ungültige Anzahl."); return; }
+  const neu=Math.round((bestand-anzahl)*100)/100;
+  if(sb){
+    const {error}=await sb.from("warenvorrat").update({menge:neu}).eq("id",id);
+    if(error){ alert("Abbuchen fehlgeschlagen: "+error.message); return; }
+    await loadData();
+  } else {
+    const i=daten.findIndex(x=>x.id==id); if(i>=0) daten[i].menge=neu;
+  }
+  refreshFilters(); render(); closeSheet();
+};
+
+// Duplizieren: legt eine Kopie mit den aktuellen Formularwerten als neuen Eintrag an
+$("#dup").onclick=async()=>{
+  const produkt=$("#iProdukt").value.trim();
+  if(!produkt){$("#iProdukt").focus();return;}
+  const rec={
+    produkt,
+    typ:$("#iTyp").value, form:$("#iForm").value,
+    jahr:parseInt($("#iJahr").value)||new Date().getFullYear(),
+    menge:$("#iMenge").value.trim()===""?null:Number($("#iMenge").value.replace(",",".")),
+    einheit:$("#iEinheit").value, notiz:$("#iNotiz").value.trim()
+  };
+  if(sb){
+    const {error}=await sb.from("warenvorrat").insert(rec);
+    if(error){ alert("Duplizieren fehlgeschlagen: "+error.message); return; }
+    await loadData();
+  } else {
+    daten.push({id:nextId++,...rec});
   }
   refreshFilters(); render(); closeSheet();
 };
