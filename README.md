@@ -9,8 +9,10 @@ Eine kleine Web-App zum Verwalten unseres privaten Warenvorrats. Sie zeigt alle 
 - Typen mit Icon dargestellt: 🥕 Gemüse · 🍎 Früchte · 🧀 Milchprodukte · 🌾 Trockenprodukte · 🍲 Gerichte
 - Einträge erfassen, bearbeiten, duplizieren und löschen
 - Abbuchen einzelner Mengen beim Verbrauchen (Standard 1, anpassbar bis zum vorhandenen Bestand)
+- Fusszeile mit Statistik nach Produkttyp (Anzahl Einträge je Typ, folgt den aktiven Filtern)
+- CSV-Export der aktuell gefilterten Einträge (Semikolon-getrennt, mit UTF-8-BOM für Excel)
 - Installierbar als App (eigenes Icon, Einmachglas) auf Handy und Desktop, offline-startfähig
-- Design in Lavendel-Tönen
+- Kompaktes Design in Lavendel-Tönen
 
 ## Datenmodell
 
@@ -23,7 +25,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 | `form` | getrocknet / gefroren / eingekellert / eingemacht |
 | `jahr` | Einlagerungsjahr |
 | `menge` | Anzahl (optional) |
-| `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/klein), Stück, Liter, Flaschen, Portionen |
+| `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/klein), Stück, Liter, Flaschen (gross/klein), Portionen |
 | `notiz` | Freitext (optional) |
 | `erstellt_am` | Zeitstempel, automatisch |
 

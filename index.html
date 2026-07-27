@@ -60,7 +60,6 @@
     background-repeat:no-repeat;background-position:right 12px center;
   }
   select:focus{border-color:var(--lav-400)}
-  .count{font-size:.74rem;color:var(--muted);margin:0 2px 7px}
   .list{display:flex;flex-direction:column;gap:6px}
   .card{
     background:var(--card);border-radius:var(--radius);padding:9px 11px;
@@ -188,7 +187,6 @@
     <select id="fJahr"><option value="">Alle Jahre</option></select>
   </div>
 
-  <div class="count" id="count"></div>
   <div class="list" id="list"></div>
 
   <footer class="appfoot">
@@ -253,7 +251,8 @@
           <option>Beutel (klein)</option>
           <option>Stück</option>
           <option>Liter</option>
-          <option>Flaschen</option>
+          <option>Flaschen (gross)</option>
+          <option>Flaschen (klein)</option>
           <option>Portionen</option>
         </select>
       </div>
@@ -314,7 +313,7 @@ const DEMO = [
   {id:12, produkt:"Linsen",       typ:"Trockenprodukte",form:"getrocknet",   jahr:2025, menge:2,  einheit:"kg",             notiz:""},
   {id:13, produkt:"Minestrone",   typ:"Gerichte",       form:"eingemacht",   jahr:2025, menge:6,  einheit:"Gläser (gross)", notiz:""},
   {id:14, produkt:"Rüebli-Suppe", typ:"Gerichte",       form:"gefroren",     jahr:2026, menge:8,  einheit:"Portionen",      notiz:""},
-  {id:15, produkt:"Tomaten",      typ:"Gemüse",         form:"eingemacht",   jahr:2025, menge:20, einheit:"Flaschen",       notiz:"Passata"},
+  {id:15, produkt:"Tomaten",      typ:"Gemüse",         form:"eingemacht",   jahr:2025, menge:20, einheit:"Flaschen (gross)", notiz:"Passata"},
   {id:16, produkt:"Zucchetti",    typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:6,  einheit:"Beutel (gross)", notiz:""},
   {id:17, produkt:"Zwetschgen",   typ:"Früchte",        form:"getrocknet",   jahr:2025, menge:1.5,einheit:"kg",             notiz:""},
 ];
@@ -331,7 +330,7 @@ const TYP_ICON = {
 
 // ---- Elemente ---------------------------------------------------------------
 const $ = s => document.querySelector(s);
-const listEl=$("#list"), qEl=$("#q"), fTyp=$("#fTyp"), fJahr=$("#fJahr"), countEl=$("#count");
+const listEl=$("#list"), qEl=$("#q"), fTyp=$("#fTyp"), fJahr=$("#fJahr");
 const overlay=$("#overlay");
 
 // ---- Filter befüllen --------------------------------------------------------
@@ -352,7 +351,6 @@ function gefilterteRows(){
 function render(){
   let rows=gefilterteRows();
 
-  countEl.textContent = rows.length + (rows.length===1?" Eintrag":" Einträge");
   renderStat(rows);
   listEl.innerHTML="";
   if(!rows.length){ listEl.innerHTML='<div class="empty">Keine Einträge gefunden.</div>'; return; }
