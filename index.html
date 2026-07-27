@@ -24,7 +24,7 @@
     --muted:#6f6683;
     --card:#ffffff;
     --shadow:0 2px 10px rgba(90,70,140,.10);
-    --radius:16px;
+    --radius:12px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
@@ -36,56 +36,78 @@
   }
   header{
     background:linear-gradient(135deg,var(--lav-500),var(--lav-700));
-    color:#fff;padding:20px 18px 22px;
+    color:#fff;padding:13px 16px 14px;
     box-shadow:var(--shadow);
     position:sticky;top:0;z-index:20;
   }
-  header h1{margin:0;font-size:1.35rem;font-weight:650;letter-spacing:.2px}
-  header p{margin:4px 0 0;opacity:.85;font-size:.82rem}
-  .wrap{max-width:820px;margin:0 auto;padding:16px 14px 120px}
+  header h1{margin:0;font-size:1.12rem;font-weight:650;letter-spacing:.2px}
+  header p{margin:3px 0 0;opacity:.85;font-size:.74rem}
+  .wrap{max-width:820px;margin:0 auto;padding:12px 12px 110px}
   .controls{
-    display:flex;flex-wrap:nowrap;gap:8px;margin-bottom:16px;
+    display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:10px;
   }
   .search{flex:2 1 0;min-width:0;position:relative}
   .search input{
-    width:100%;padding:12px 14px 12px 40px;border:1px solid var(--lav-200);
-    border-radius:12px;font-size:1rem;background:#fff;color:var(--ink);outline:none;
+    width:100%;padding:9px 12px 9px 36px;border:1px solid var(--lav-200);
+    border-radius:10px;font-size:.9rem;background:#fff;color:var(--ink);outline:none;
   }
   .search input:focus{border-color:var(--lav-400);box-shadow:0 0 0 3px var(--lav-100)}
   .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.5}
   select{
-    flex:1 1 0;min-width:0;padding:11px 22px 11px 10px;border:1px solid var(--lav-200);border-radius:12px;
-    font-size:.78rem;background:#fff;color:var(--ink);outline:none;appearance:none;
+    flex:1 1 0;min-width:0;padding:9px 20px 9px 9px;border:1px solid var(--lav-200);border-radius:10px;
+    font-size:.74rem;background:#fff;color:var(--ink);outline:none;appearance:none;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237458ad' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
     background-repeat:no-repeat;background-position:right 12px center;
   }
   select:focus{border-color:var(--lav-400)}
-  .count{font-size:.8rem;color:var(--muted);margin:0 2px 10px}
-  .list{display:flex;flex-direction:column;gap:10px}
+  .count{font-size:.74rem;color:var(--muted);margin:0 2px 7px}
+  .list{display:flex;flex-direction:column;gap:6px}
   .card{
-    background:var(--card);border-radius:var(--radius);padding:14px 16px;
-    box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;
+    background:var(--card);border-radius:var(--radius);padding:9px 11px;
+    box-shadow:var(--shadow);display:flex;align-items:center;gap:9px;
     border:1px solid var(--lav-100);
   }
   .typicon{
-    flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:var(--lav-100);
-    display:flex;align-items:center;justify-content:center;font-size:1.5rem;line-height:1;
+    flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:var(--lav-100);
+    display:flex;align-items:center;justify-content:center;font-size:1.15rem;line-height:1;
   }
   .card .main{flex:1;min-width:0}
-  .card .name{font-weight:640;font-size:1.02rem}
-  .card .sub{font-size:.82rem;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px 10px}
+  .card .name{font-weight:640;font-size:.9rem}
+  .card .sub{font-size:.72rem;color:var(--muted);margin-top:2px;display:flex;flex-wrap:wrap;gap:4px 8px}
   .badge{
-    display:inline-block;padding:3px 9px;border-radius:999px;font-size:.72rem;font-weight:600;
+    display:inline-block;padding:2px 7px;border-radius:999px;font-size:.66rem;font-weight:600;
     background:var(--lav-100);color:var(--lav-700);white-space:nowrap;
   }
   .badge.form{background:var(--lav-200);color:var(--lav-700)}
-  .menge{font-weight:600;color:var(--ink);font-size:.92rem;white-space:nowrap}
+  .menge{font-weight:600;color:var(--ink);font-size:.82rem;white-space:nowrap}
   .card .edit{
-    background:none;border:none;cursor:pointer;color:var(--lav-500);padding:6px;border-radius:8px;
+    background:none;border:none;cursor:pointer;color:var(--lav-500);padding:5px;border-radius:8px;
   }
   .card .edit:hover{background:var(--lav-100)}
-  .empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:.95rem}
-  .letter{font-size:.78rem;font-weight:700;color:var(--lav-600);margin:14px 4px 2px;text-transform:uppercase;letter-spacing:.5px}
+  .appfoot{
+    margin-top:16px;padding:13px 14px;background:var(--card);border:1px solid var(--lav-100);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+  }
+  .stat-head{font-size:.72rem;font-weight:700;color:var(--lav-600);text-transform:uppercase;
+    letter-spacing:.5px;margin-bottom:9px}
+  .stat{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .stat .chip{
+    display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;
+    background:var(--lav-100);color:var(--lav-700);font-size:.72rem;font-weight:600;
+  }
+  .stat .chip b{color:var(--ink);font-weight:700}
+  .stat .chip.total{background:var(--lav-600);color:#fff}
+  .stat .chip.total b{color:#fff}
+  .btn-csv{
+    width:100%;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    padding:10px 14px;border:1px solid var(--lav-200);border-radius:10px;
+    background:#fff;color:var(--lav-700);font-size:.82rem;font-weight:600;
+    cursor:pointer;font-family:inherit;
+  }
+  .btn-csv:hover{background:var(--lav-100)}
+  .btn-csv:active{background:var(--lav-200)}
+  .empty{text-align:center;color:var(--muted);padding:50px 20px;font-size:.9rem}
+  .letter{font-size:.72rem;font-weight:700;color:var(--lav-600);margin:10px 4px 1px;text-transform:uppercase;letter-spacing:.5px}
   .fab{
     position:fixed;right:18px;bottom:22px;width:60px;height:60px;border-radius:50%;
     background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:#fff;border:none;
@@ -162,12 +184,21 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="q" type="search" placeholder="Suchen…" autocomplete="off">
     </div>
-    <select id="fTyp"><option value="">Alle</option></select>
+    <select id="fTyp"><option value="">Alle Arten</option></select>
     <select id="fJahr"><option value="">Alle Jahre</option></select>
   </div>
 
   <div class="count" id="count"></div>
   <div class="list" id="list"></div>
+
+  <footer class="appfoot">
+    <div class="stat-head">Statistik nach Produkttyp</div>
+    <div class="stat" id="stat"></div>
+    <button class="btn-csv" id="csv" type="button" title="Als CSV exportieren">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      Als CSV exportieren
+    </button>
+  </footer>
 </div>
 
 <button class="fab" id="add" aria-label="Neu erfassen">+</button>
@@ -310,15 +341,19 @@ function fillFilters(){
 }
 
 // ---- Rendern ----------------------------------------------------------------
-function render(){
+function gefilterteRows(){
   const q=qEl.value.trim().toLowerCase(), ft=fTyp.value, fj=fJahr.value;
-  let rows=daten.filter(d=>
+  return daten.filter(d=>
     (!q||d.produkt.toLowerCase().includes(q)) &&
     (!ft||d.typ===ft) &&
     (!fj||String(d.jahr)===fj)
   ).sort((a,b)=> a.produkt.localeCompare(b.produkt,"de") || a.jahr-b.jahr);
+}
+function render(){
+  let rows=gefilterteRows();
 
   countEl.textContent = rows.length + (rows.length===1?" Eintrag":" Einträge");
+  renderStat(rows);
   listEl.innerHTML="";
   if(!rows.length){ listEl.innerHTML='<div class="empty">Keine Einträge gefunden.</div>'; return; }
 
@@ -347,6 +382,20 @@ function render(){
   });
 }
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+
+// ---- Fusszeilen-Statistik: Anzahl Einträge je Produkttyp -------------------
+function renderStat(rows){
+  const statEl=$("#stat");
+  const typen=[...TYP_ORDER, ...new Set(rows.map(d=>d.typ))].filter((t,i,a)=>a.indexOf(t)===i);
+  let html="";
+  typen.forEach(t=>{
+    const n=rows.filter(d=>d.typ===t).length;
+    if(!n) return;
+    html+=`<span class="chip">${TYP_ICON[t]||"📦"} ${esc(t)} <b>${n}</b></span>`;
+  });
+  html+=`<span class="chip total">Total <b>${rows.length}</b></span>`;
+  statEl.innerHTML=html;
+}
 
 // ---- Sheet öffnen / speichern ----------------------------------------------
 function openSheet(d){
@@ -468,12 +517,33 @@ $("#dup").onclick=async()=>{
 
 function refreshFilters(){
   const t=fTyp.value, j=fJahr.value;
-  fTyp.innerHTML='<option value="">Alle</option>';
+  fTyp.innerHTML='<option value="">Alle Arten</option>';
   fJahr.innerHTML='<option value="">Alle Jahre</option>';
   fillFilters(); fTyp.value=t; fJahr.value=j;
 }
 
 qEl.oninput=render; fTyp.onchange=render; fJahr.onchange=render;
+
+// ---- CSV-Export -------------------------------------------------------------
+// Exportiert die aktuell gefilterten Einträge. Semikolon-getrennt und mit
+// UTF-8-BOM, damit Excel (auch Schweizer/DE) Umlaute und Spalten korrekt öffnet.
+function csvFeld(v){
+  const s = (v==null?"":String(v));
+  return /[";\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+$("#csv").onclick=()=>{
+  const rows=gefilterteRows();
+  const kopf=["Produkt","Typ","Form","Jahr","Menge","Einheit","Notiz"];
+  const zeilen=rows.map(d=>[d.produkt,d.typ,d.form,d.jahr,d.menge,d.einheit,d.notiz].map(csvFeld).join(";"));
+  const csv="﻿"+[kopf.join(";"),...zeilen].join("\r\n");
+  const heute=new Date().toISOString().slice(0,10);
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download="Warenvorrat_"+heute+".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
 
 // ---- Daten laden ------------------------------------------------------------
 async function loadData(){
