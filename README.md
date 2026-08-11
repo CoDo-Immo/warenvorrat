@@ -25,7 +25,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 | `form` | getrocknet / gefroren / eingekellert / eingemacht |
 | `jahr` | Einlagerungsjahr |
 | `menge` | Anzahl (optional) |
-| `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/klein), Stück, Liter, Flaschen (gross/klein), Portionen |
+| `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/mittel/klein), Stück, Liter, Flaschen (gross/klein), Portionen |
 | `notiz` | Freitext (optional) |
 | `erstellt_am` | Zeitstempel, automatisch |
 
@@ -34,6 +34,10 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 - Eine einzige `index.html` (HTML, CSS, JavaScript) – keine Build-Schritte
 - Daten in [Supabase](https://supabase.com) (PostgreSQL), Zugriff über die Supabase-JS-Bibliothek
 - Veröffentlicht über GitHub Pages
+
+## Versionierung
+
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.5** / `warenvorrat-v5`.
 
 ## Dateien
 
