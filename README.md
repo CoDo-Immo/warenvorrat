@@ -1,11 +1,11 @@
 # Warenvorrat Adlemsried
 
-Eine kleine Web-App zum Verwalten unseres privaten Warenvorrats. Sie zeigt alle eingelagerten Produkte, lässt sich nach Typ und Jahr filtern und läuft auf Android, Apple und Windows – direkt im Browser, ohne Installation.
+Eine kleine Web-App zum Verwalten unseres privaten Warenvorrats. Sie zeigt alle eingelagerten Produkte, lässt sich nach Typ, Form und Jahr filtern und läuft auf Android, Apple und Windows – direkt im Browser, ohne Installation.
 
 ## Funktionen
 
 - Alphabetische Liste aller eingelagerten Produkte mit Buchstaben-Gliederung
-- Filter nach Typ und Einlagerungsjahr sowie ein Suchfeld
+- Filter nach Typ, Form und Einlagerungsjahr sowie ein Suchfeld
 - Typen mit Icon dargestellt: 🥕 Gemüse · 🍎 Früchte · 🧀 Milchprodukte · 🌾 Trockenprodukte · 🍲 Gerichte
 - Einträge erfassen, bearbeiten, duplizieren und löschen
 - Abbuchen einzelner Mengen beim Verbrauchen (Standard 1, anpassbar bis zum vorhandenen Bestand)
@@ -37,7 +37,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 
 ## Versionierung
 
-Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.6** / `warenvorrat-v6`.
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.7** / `warenvorrat-v7`.
 
 ## Dateien
 

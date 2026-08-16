@@ -173,7 +173,7 @@
 <body>
 <header>
   <h1>🌿 Warenvorrat Adlemsried</h1>
-  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v1.6</span></p>
+  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v1.7</span></p>
 </header>
 
 <div class="wrap">
@@ -185,6 +185,7 @@
       <input id="q" type="search" placeholder="Suchen…" autocomplete="off">
     </div>
     <select id="fTyp"><option value="">Alle Arten</option></select>
+    <select id="fForm"><option value="">Alle Formen</option></select>
     <select id="fJahr"><option value="">Alle Jahre</option></select>
   </div>
 
@@ -326,27 +327,30 @@ let nextId = 1000;
 const CLOUD = SUPABASE_URL && SUPABASE_ANON_KEY;
 const sb = CLOUD ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const TYP_ORDER = ["Gemüse","Früchte","Milchprodukte","Trockenprodukte","Gerichte"];
+const FORM_ORDER = ["getrocknet","gefroren","eingekellert","eingemacht","eingekocht"];
 const TYP_ICON = {
   "Gemüse":"🥕","Früchte":"🍎","Milchprodukte":"🧀","Trockenprodukte":"🌾","Gerichte":"🍲"
 };
 
 // ---- Elemente ---------------------------------------------------------------
 const $ = s => document.querySelector(s);
-const listEl=$("#list"), qEl=$("#q"), fTyp=$("#fTyp"), fJahr=$("#fJahr");
+const listEl=$("#list"), qEl=$("#q"), fTyp=$("#fTyp"), fForm=$("#fForm"), fJahr=$("#fJahr");
 const overlay=$("#overlay");
 
 // ---- Filter befüllen --------------------------------------------------------
 function fillFilters(){
   TYP_ORDER.forEach(t=>{ if(daten.some(d=>d.typ===t)){ const o=document.createElement("option");o.value=t;o.textContent=(TYP_ICON[t]||"")+" "+t;fTyp.appendChild(o);}});
+  [...FORM_ORDER, ...new Set(daten.map(d=>d.form))].filter((f,i,a)=>a.indexOf(f)===i).forEach(f=>{ if(daten.some(d=>d.form===f)){ const o=document.createElement("option");o.value=f;o.textContent=f;fForm.appendChild(o);}});
   [...new Set(daten.map(d=>d.jahr))].sort((a,b)=>b-a).forEach(j=>{const o=document.createElement("option");o.value=j;o.textContent=j;fJahr.appendChild(o);});
 }
 
 // ---- Rendern ----------------------------------------------------------------
 function gefilterteRows(){
-  const q=qEl.value.trim().toLowerCase(), ft=fTyp.value, fj=fJahr.value;
+  const q=qEl.value.trim().toLowerCase(), ft=fTyp.value, ff=fForm.value, fj=fJahr.value;
   return daten.filter(d=>
     (!q||d.produkt.toLowerCase().includes(q)) &&
     (!ft||d.typ===ft) &&
+    (!ff||d.form===ff) &&
     (!fj||String(d.jahr)===fj)
   ).sort((a,b)=> a.produkt.localeCompare(b.produkt,"de") || a.jahr-b.jahr);
 }
@@ -516,13 +520,14 @@ $("#dup").onclick=async()=>{
 };
 
 function refreshFilters(){
-  const t=fTyp.value, j=fJahr.value;
+  const t=fTyp.value, f=fForm.value, j=fJahr.value;
   fTyp.innerHTML='<option value="">Alle Arten</option>';
+  fForm.innerHTML='<option value="">Alle Formen</option>';
   fJahr.innerHTML='<option value="">Alle Jahre</option>';
-  fillFilters(); fTyp.value=t; fJahr.value=j;
+  fillFilters(); fTyp.value=t; fForm.value=f; fJahr.value=j;
 }
 
-qEl.oninput=render; fTyp.onchange=render; fJahr.onchange=render;
+qEl.oninput=render; fTyp.onchange=render; fForm.onchange=render; fJahr.onchange=render;
 
 // ---- CSV-Export -------------------------------------------------------------
 // Exportiert die aktuell gefilterten Einträge. Semikolon-getrennt und mit
