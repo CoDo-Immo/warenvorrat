@@ -1,5 +1,5 @@
 // Service Worker – macht die App installierbar und offline-startfähig.
-const CACHE = "warenvorrat-v7";
+const CACHE = "warenvorrat-v8";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./icon.svg", "./icon-192.png", "./icon-512.png",

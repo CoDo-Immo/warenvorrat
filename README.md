@@ -22,7 +22,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 |------|-----------|
 | `produkt` | Name des Produkts |
 | `typ` | Gemüse / Früchte / Milchprodukte / Trockenprodukte / Gerichte |
-| `form` | getrocknet / gefroren / eingekellert / eingemacht / eingekocht |
+| `form` | getrocknet / gefroren / eingekellert / eingemacht / eingekocht / eingelagert |
 | `jahr` | Einlagerungsjahr |
 | `menge` | Anzahl (optional) |
 | `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/mittel/klein), Stück, Liter, Flaschen (gross/klein), Portionen |
@@ -37,7 +37,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 
 ## Versionierung
 
-Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.7** / `warenvorrat-v7`.
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.8** / `warenvorrat-v8`.
 
 ## Dateien
 
