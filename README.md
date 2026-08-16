@@ -6,7 +6,7 @@ Eine kleine Web-App zum Verwalten unseres privaten Warenvorrats. Sie zeigt alle 
 
 - Alphabetische Liste aller eingelagerten Produkte mit Buchstaben-Gliederung
 - Filter nach Typ, Form und Einlagerungsjahr sowie ein Suchfeld
-- Typen mit Icon dargestellt: 🥕 Gemüse · 🍎 Früchte · 🧀 Milchprodukte · 🌾 Trockenprodukte · 🍲 Gerichte
+- Typen mit Icon dargestellt: 🥕 Gemüse · 🍎 Früchte · 🧀 Milchprodukte · 🌾 Trockenprodukte · 🍲 Gerichte · 🛒 Lebensmittel
 - Einträge erfassen, bearbeiten, duplizieren und löschen
 - Abbuchen einzelner Mengen beim Verbrauchen (Standard 1, anpassbar bis zum vorhandenen Bestand)
 - Fusszeile mit Statistik nach Produkttyp (Anzahl Einträge je Typ, folgt den aktiven Filtern)
@@ -21,7 +21,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 | Feld | Bedeutung |
 |------|-----------|
 | `produkt` | Name des Produkts |
-| `typ` | Gemüse / Früchte / Milchprodukte / Trockenprodukte / Gerichte |
+| `typ` | Gemüse / Früchte / Milchprodukte / Trockenprodukte / Gerichte / Lebensmittel |
 | `form` | getrocknet / gefroren / eingekellert / eingemacht / eingekocht / eingelagert |
 | `jahr` | Einlagerungsjahr |
 | `menge` | Anzahl (optional) |
@@ -37,7 +37,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 
 ## Versionierung
 
-Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.8** / `warenvorrat-v8`.
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.9** / `warenvorrat-v9`.
 
 ## Dateien
 

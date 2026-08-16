@@ -173,7 +173,7 @@
 <body>
 <header>
   <h1>🌿 Warenvorrat Adlemsried</h1>
-  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v1.8</span></p>
+  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v1.9</span></p>
 </header>
 
 <div class="wrap">
@@ -222,6 +222,7 @@
           <option value="Milchprodukte">🧀 Milchprodukte</option>
           <option value="Trockenprodukte">🌾 Trockenprodukte</option>
           <option value="Gerichte">🍲 Gerichte</option>
+          <option value="Lebensmittel">🛒 Lebensmittel</option>
         </select>
       </div>
       <div class="field">
@@ -326,10 +327,10 @@ let daten = [];
 let nextId = 1000;
 const CLOUD = SUPABASE_URL && SUPABASE_ANON_KEY;
 const sb = CLOUD ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-const TYP_ORDER = ["Gemüse","Früchte","Milchprodukte","Trockenprodukte","Gerichte"];
+const TYP_ORDER = ["Gemüse","Früchte","Milchprodukte","Trockenprodukte","Gerichte","Lebensmittel"];
 const FORM_ORDER = ["getrocknet","gefroren","eingekellert","eingemacht","eingekocht","eingelagert"];
 const TYP_ICON = {
-  "Gemüse":"🥕","Früchte":"🍎","Milchprodukte":"🧀","Trockenprodukte":"🌾","Gerichte":"🍲"
+  "Gemüse":"🥕","Früchte":"🍎","Milchprodukte":"🧀","Trockenprodukte":"🌾","Gerichte":"🍲","Lebensmittel":"🛒"
 };
 
 // ---- Elemente ---------------------------------------------------------------
