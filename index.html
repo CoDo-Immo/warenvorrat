@@ -173,7 +173,7 @@
 <body>
 <header>
   <h1>🌿 Warenvorrat Adlemsried</h1>
-  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v1.9</span></p>
+  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v2.0</span></p>
 </header>
 
 <div class="wrap">
@@ -243,22 +243,7 @@
       </div>
       <div class="field">
         <label>Einheit</label>
-        <select id="iEinheit">
-          <option>kg</option>
-          <option>Gläser (gross)</option>
-          <option>Gläser (klein)</option>
-          <option>Gefäss (gross)</option>
-          <option>Gefäss (klein)</option>
-          <option>Gefäss (mini)</option>
-          <option>Beutel (gross)</option>
-          <option>Beutel (mittel)</option>
-          <option>Beutel (klein)</option>
-          <option>Stück</option>
-          <option>Liter</option>
-          <option>Flaschen (gross)</option>
-          <option>Flaschen (klein)</option>
-          <option>Portionen</option>
-        </select>
+        <select id="iEinheit"></select>
       </div>
     </div>
     <div class="field">
@@ -332,6 +317,11 @@ const FORM_ORDER = ["getrocknet","gefroren","eingekellert","eingemacht","eingeko
 const TYP_ICON = {
   "Gemüse":"🥕","Früchte":"🍎","Milchprodukte":"🧀","Trockenprodukte":"🌾","Gerichte":"🍲","Lebensmittel":"🛒"
 };
+// Fallback für den Demo-Modus (ohne Supabase) bzw. falls die Tabelle "einheiten"
+// noch nicht angelegt wurde. Im Normalbetrieb kommen die Einheiten aus Supabase –
+// neue Einheit = neue Zeile in der Tabelle "einheiten", kein Code-Update nötig.
+const EINHEITEN_DEMO = ["kg","Gläser (gross)","Gläser (klein)","Gefäss (gross)","Gefäss (klein)","Gefäss (mini)","Beutel (gross)","Beutel (mittel)","Beutel (klein)","Stück","Liter","Flaschen (gross)","Flaschen (klein)","Portionen"];
+let einheiten = [];
 
 // ---- Elemente ---------------------------------------------------------------
 const $ = s => document.querySelector(s);
@@ -411,7 +401,13 @@ function openSheet(d){
   $("#iForm").value  = d?d.form:"gefroren";
   $("#iJahr").value  = d?d.jahr:new Date().getFullYear();
   $("#iMenge").value = d?d.menge:"";
-  $("#iEinheit").value=d?d.einheit:"";
+  const selEinheit=$("#iEinheit");
+  // Falls die gespeicherte Einheit nicht (mehr) in der Liste ist (alter Eintrag,
+  // deaktivierte Einheit) trotzdem anzeigen, statt sie stillschweigend zu leeren.
+  if(d && d.einheit && ![...selEinheit.options].some(o=>o.value===d.einheit)){
+    const o=document.createElement("option");o.value=d.einheit;o.textContent=d.einheit;selEinheit.appendChild(o);
+  }
+  selEinheit.value=d?d.einheit:"";
   $("#iNotiz").value = d?d.notiz:"";
   $("#del").style.display = d?"flex":"none";
   $("#dup").style.display = d?"flex":"none";
@@ -562,11 +558,31 @@ async function loadData(){
   }
 }
 
+// ---- Einheiten laden ---------------------------------------------------------
+// Kommen aus der Supabase-Tabelle "einheiten" (Spalten: name, sortierung, aktiv).
+// Existiert die Tabelle noch nicht (z.B. Migration noch nicht gelaufen) oder läuft
+// die App im Demo-Modus, wird auf EINHEITEN_DEMO zurückgefallen.
+async function loadEinheiten(){
+  if(sb){
+    const {data,error}=await sb.from("einheiten").select("name").eq("aktiv",true)
+      .order("sortierung",{ascending:true,nullsFirst:false}).order("name",{ascending:true});
+    if(!error && data && data.length){ einheiten=data.map(e=>e.name); return; }
+  }
+  einheiten=[...EINHEITEN_DEMO];
+}
+function fillEinheitSelect(){
+  const sel=$("#iEinheit");
+  sel.innerHTML="";
+  einheiten.forEach(e=>{ const o=document.createElement("option");o.value=e;o.textContent=e;sel.appendChild(o); });
+}
+
 // ---- Start ------------------------------------------------------------------
 (async()=>{
   if(!CLOUD){ $(".demo-note").textContent="Demo-Modus mit Beispieldaten · Supabase-Schlüssel noch nicht eingetragen"; }
   else { $(".demo-note").style.display="none"; }
   await loadData();
+  await loadEinheiten();
+  fillEinheitSelect();
   fillFilters(); render();
 })();
 

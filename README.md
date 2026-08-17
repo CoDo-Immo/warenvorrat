@@ -25,9 +25,13 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 | `form` | getrocknet / gefroren / eingekellert / eingemacht / eingekocht / eingelagert |
 | `jahr` | Einlagerungsjahr |
 | `menge` | Anzahl (optional) |
-| `einheit` | kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/mittel/klein), Stück, Liter, Flaschen (gross/klein), Portionen |
+| `einheit` | freier Text, Auswahl kommt aus der Supabase-Tabelle `einheiten` (siehe unten) |
 | `notiz` | Freitext (optional) |
 | `erstellt_am` | Zeitstempel, automatisch |
+
+### Einheiten erweiterbar ohne Code-Änderung
+
+Die Liste der Einheiten (kg, Gläser (gross/klein), Gefäss (gross/klein/mini), Beutel (gross/mittel/klein), Stück, Liter, Flaschen (gross/klein), Portionen, …) steht **nicht** mehr im Code, sondern in der Supabase-Tabelle `einheiten` (Spalten `name`, `sortierung`, `aktiv`). Neue Einheit hinzufügen: im Supabase **Table Editor** eine Zeile in `einheiten` einfügen (`name` = Bezeichnung, `sortierung` = Zahl für die Reihenfolge, `aktiv` = true) – sie erscheint danach automatisch in der App-Auswahl, ganz ohne `index.html` anzufassen. Eine Einheit ausblenden: `aktiv` auf `false` setzen, statt die Zeile zu löschen (bestehende Einträge mit dieser Einheit bleiben dann trotzdem lesbar). Existiert die Tabelle einmal nicht (z.B. frisch aufgesetztes Projekt vor der Migration) oder läuft die App im Demo-Modus, fällt sie auf eine feste Liste im Code zurück.
 
 ## Technik
 
@@ -37,7 +41,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 
 ## Versionierung
 
-Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v1.9** / `warenvorrat-v9`.
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v2.0** / `warenvorrat-v10`.
 
 ## Dateien
 
@@ -47,7 +51,8 @@ Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="
 | `sw.js` | Service Worker – macht die App installierbar und offline-startfähig |
 | `manifest.json` | App-Metadaten für «Zum Startbildschirm hinzufügen» |
 | `icon.svg`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `favicon-32.png` | App-Icon (Einmachglas) |
-| `supabase_setup.sql` | Legt die Datenbank-Tabelle in Supabase an (nur einmal nötig, **nicht** auf GitHub laden) |
+| `supabase_setup.sql` | Legt alle Datenbank-Tabellen (inkl. `einheiten`) für ein **neues** Supabase-Projekt an (nur einmal nötig, **nicht** auf GitHub laden) |
+| `supabase_migration_einheiten.sql` | Für ein **bestehendes** Projekt: ergänzt nur die neue Tabelle `einheiten` (nur einmal nötig, **nicht** auf GitHub laden) |
 | `ANLEITUNG.md` | Schritt-für-Schritt-Einrichtung von Supabase und GitHub |
 
 ## Einrichtung
