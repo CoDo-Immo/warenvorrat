@@ -228,7 +228,7 @@
       <div class="field">
         <label>Form</label>
         <select id="iForm">
-          <option>getrocknet</option><option>gefroren</option><option>eingekellert</option><option>eingemacht</option><option>eingekocht</option><option>eingelagert</option>
+          <option>getrocknet</option><option>gefroren</option><option>eingekellert</option><option>eingemacht</option><option>eingelagert</option>
         </select>
       </div>
     </div>
@@ -254,7 +254,7 @@
     <div class="actions">
       <span class="abStepper" id="abStepper" style="display:none">
         <button type="button" class="stepBtn" id="abMinus" aria-label="weniger">−</button>
-        <input id="iAbbuchen" type="number" inputmode="numeric" value="1" min="1" step="1">
+        <input id="iAbbuchen" type="number" inputmode="decimal" value="1" min="0.5" step="0.5">
         <button type="button" class="stepBtn" id="abPlus" aria-label="mehr">+</button>
       </span>
       <button class="btn iconbtn abbuchen" id="abbuchen" title="Abbuchen" aria-label="Abbuchen" style="display:none">
@@ -313,7 +313,7 @@ let nextId = 1000;
 const CLOUD = SUPABASE_URL && SUPABASE_ANON_KEY;
 const sb = CLOUD ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const TYP_ORDER = ["Gemüse","Früchte","Milchprodukte","Trockenprodukte","Gerichte","Lebensmittel"];
-const FORM_ORDER = ["getrocknet","gefroren","eingekellert","eingemacht","eingekocht","eingelagert"];
+const FORM_ORDER = ["getrocknet","gefroren","eingekellert","eingemacht","eingelagert"];
 const TYP_ICON = {
   "Gemüse":"🥕","Früchte":"🍎","Milchprodukte":"🧀","Trockenprodukte":"🌾","Gerichte":"🍲","Lebensmittel":"🛒"
 };
@@ -472,18 +472,18 @@ $("#del").onclick=async()=>{
 // Abbuchen: Bestand um die gewählte Anzahl reduzieren (max = aktueller Bestand)
 function clampAbbuchen(){
   const ab=$("#iAbbuchen"); const max=Number(ab.max)||1;
-  let v=Math.floor(Number(ab.value.replace(",","."))||0);
-  if(v<1) v=1; if(v>max) v=max; ab.value=v;
+  let v=Math.round((Number(ab.value.replace(",","."))||0)*2)/2;
+  if(v<0.5) v=0.5; if(v>max) v=max; ab.value=v;
 }
-$("#abMinus").onclick=()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||1)-1; clampAbbuchen(); };
-$("#abPlus").onclick =()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||0)+1; clampAbbuchen(); };
+$("#abMinus").onclick=()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||1)-0.5; clampAbbuchen(); };
+$("#abPlus").onclick =()=>{ $("#iAbbuchen").value=(Number($("#iAbbuchen").value)||0)+0.5; clampAbbuchen(); };
 $("#iAbbuchen").onchange=clampAbbuchen;
 $("#abbuchen").onclick=async()=>{
   const id=$("#fId").value;
   const bestand=Number($("#iMenge").value.replace(",","."))||0;
   clampAbbuchen();
   const anzahl=Number($("#iAbbuchen").value)||0;
-  if(anzahl<1||anzahl>bestand){ alert("Ungültige Anzahl."); return; }
+  if(anzahl<0.5||anzahl>bestand){ alert("Ungültige Anzahl."); return; }
   const neu=Math.round((bestand-anzahl)*100)/100;
   if(sb){
     const {error}=await sb.from("warenvorrat").update({menge:neu}).eq("id",id);
