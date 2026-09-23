@@ -5,7 +5,8 @@ Eine kleine Web-App zum Verwalten unseres privaten Warenvorrats. Sie zeigt alle 
 ## Funktionen
 
 - Alphabetische Liste aller eingelagerten Produkte mit Buchstaben-Gliederung
-- Filter nach Typ, Form und Einlagerungsjahr sowie ein Suchfeld
+- Arten als Kacheln (mit Anzahl, «Alle» an letzter Stelle), Filter nach Form und Jahr sowie ein Suchfeld; Button «Filter zurücksetzen»
+- Einlagerungsdatum («Eingelagert am», Default = Erfassungstag, nur im Formular sichtbar); Warnung bei Einlagerung über 1 Jahr (Badge «über 1 Jahr», Hinweisbalken mit Schnellfilter)
 - Typen mit Icon dargestellt: 🥕 Gemüse · 🍎 Früchte · 🧀 Milchprodukte · 🌾 Trockenprodukte · 🍲 Gerichte · 🛒 Lebensmittel
 - Einträge erfassen, bearbeiten, duplizieren und löschen
 - Abbuchen einzelner Mengen beim Verbrauchen (Standard 1, anpassbar bis zum vorhandenen Bestand)
@@ -27,6 +28,7 @@ Ein Eintrag entspricht einer konkreten Einlagerung. Vom gleichen Produkt kann es
 | `menge` | Anzahl (optional) |
 | `einheit` | freier Text, Auswahl kommt aus der Supabase-Tabelle `einheiten` (siehe unten) |
 | `notiz` | Freitext (optional) |
+| `eingelagert_am` | Datum der Einlagerung (date, Default heute). Seit v2.1 – Migration `supabase_migration_einlagerungsdatum.sql` |
 | `erstellt_am` | Zeitstempel, automatisch |
 
 ### Einheiten erweiterbar ohne Code-Änderung
@@ -41,7 +43,7 @@ Die Liste der Einheiten (kg, Gläser (gross/klein), Gefäss (gross/klein/mini), 
 
 ## Versionierung
 
-Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v2.0** / `warenvorrat-v10`.
+Die aktuelle Version steht rechts in der zweiten Titelzeile der App (`<span id="appVersion">` in `index.html`). Bei jeder Änderung beide Stellen gemeinsam hochzählen: Versionsnummer `vX.Y` und der Cache-Name `warenvorrat-vY` in `sw.js` – sonst kommt das Update bei installierten Geräten nicht an. Aktuell: **v2.1** / `warenvorrat-v11`.
 
 ## Dateien
 

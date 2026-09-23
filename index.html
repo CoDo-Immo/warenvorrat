@@ -164,6 +164,43 @@
   .iconbtn.save:active{background:var(--lav-700)}
   .iconbtn.abbuchen{background:var(--lav-200);color:var(--lav-700)}
   .iconbtn.abbuchen:active{background:var(--lav-300)}
+  /* ---- v2.1: Arten als Kacheln ---- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:6px;margin-bottom:8px}
+  .tile{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    padding:8px 4px 7px;border-radius:11px;border:1px solid var(--lav-200);background:#fff;
+    color:var(--ink);cursor:pointer;font-family:inherit;min-height:66px;
+    box-shadow:0 1px 4px rgba(90,70,140,.06);transition:background .12s,border-color .12s;
+  }
+  .tile .ti{font-size:1.35rem;line-height:1}
+  .tile .tn{font-size:.64rem;font-weight:620;line-height:1.15;text-align:center;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  .tile .tc{font-size:.62rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .tile:hover{border-color:var(--lav-400)}
+  .tile.active{background:var(--lav-600);border-color:var(--lav-600);color:#fff}
+  .tile.active .tc{color:rgba(255,255,255,.85)}
+  .tile.leer{opacity:.4}
+  /* ---- v2.1: Filterzeile mit Zurücksetzen ---- */
+  .filterbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 2px 8px;font-size:.74rem;color:var(--muted)}
+  .btn-reset{
+    display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;
+    border:1px solid var(--lav-200);background:#fff;color:var(--lav-700);font-size:.72rem;font-weight:600;
+    cursor:pointer;font-family:inherit;
+  }
+  .btn-reset:hover{background:var(--lav-100)}
+  .btn-reset:disabled{opacity:.4;cursor:default;background:#fff}
+  /* ---- v2.1: Warnung Einlagerung > 1 Jahr ---- */
+  :root{--warn-bg:#fff4e0;--warn-bd:#f1c27d;--warn-ink:#9a5b00}
+  .card.alt{border-color:var(--warn-bd);box-shadow:inset 3px 0 0 var(--warn-bd),var(--shadow)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-bd)}
+  .warnhint{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn-ink);
+    border-radius:10px;padding:8px 11px;margin-bottom:8px;font-size:.76rem;font-weight:600;
+    cursor:pointer;font-family:inherit;text-align:left;
+  }
+  .warnhint.active{background:var(--warn-bd);color:#4a2c00}
+  .warnhint .lnk{white-space:nowrap;text-decoration:underline;font-weight:600}
+  .datewarn{font-size:.74rem;color:var(--warn-ink);margin-top:5px;font-weight:600}
   .demo-note{
     background:var(--lav-100);color:var(--lav-700);font-size:.75rem;text-align:center;
     padding:8px;border-radius:10px;margin-bottom:14px;
@@ -173,7 +210,7 @@
 <body>
 <header>
   <h1>🌿 Warenvorrat Adlemsried</h1>
-  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v2.0</span></p>
+  <p><span>Unser eingelagerter Vorrat – immer im Blick</span><span class="version" id="appVersion">v2.1</span></p>
 </header>
 
 <div class="wrap">
@@ -184,10 +221,21 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="q" type="search" placeholder="Suchen…" autocomplete="off">
     </div>
-    <select id="fTyp"><option value="">Alle Arten</option></select>
     <select id="fForm"><option value="">Alle Formen</option></select>
     <select id="fJahr"><option value="">Alle Jahre</option></select>
   </div>
+
+  <div class="tiles" id="tiles" role="group" aria-label="Arten"></div>
+
+  <div class="filterbar">
+    <span id="treffer"></span>
+    <button class="btn-reset" id="reset" type="button" disabled>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      Filter zurücksetzen
+    </button>
+  </div>
+
+  <button class="warnhint" id="warnhint" type="button" style="display:none"></button>
 
   <div class="list" id="list"></div>
 
@@ -237,6 +285,13 @@
         <label>Jahr</label>
         <input id="iJahr" type="number" inputmode="numeric" placeholder="2026">
       </div>
+      <div class="field" style="flex:1.4">
+        <label>Eingelagert am</label>
+        <input id="iEingelagert" type="date">
+      </div>
+    </div>
+    <div id="dateWarn" class="datewarn" style="display:none;margin:-6px 0 12px"></div>
+    <div class="row">
       <div class="field">
         <label>Menge</label>
         <input id="iMenge" type="text" inputmode="decimal" placeholder="6">
@@ -287,24 +342,28 @@ const SUPABASE_ANON_KEY = "sb_publishable_Uz3NvolxybpAZ8wqCNAWnQ_K6Mpwste";
 
 // ---- Datenmodell / Beispieldaten -------------------------------------------
 // Feld-Struktur = Supabase-Tabelle "warenvorrat"
+// Hilfsfunktion Datum (ISO YYYY-MM-DD, lokale Zeit)
+function isoDatum(dt){ const p=n=>String(n).padStart(2,"0"); return dt.getFullYear()+"-"+p(dt.getMonth()+1)+"-"+p(dt.getDate()); }
+function heuteIso(){ return isoDatum(new Date()); }
+function vorTagen(n){ const d=new Date(); d.setDate(d.getDate()-n); return isoDatum(d); }
 const DEMO = [
-  {id:1,  produkt:"Apfelmus",     typ:"Früchte",        form:"eingemacht",   jahr:2025, menge:12, einheit:"Gläser (gross)", notiz:"Gravensteiner"},
-  {id:2,  produkt:"Bohnen",       typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:8,  einheit:"Beutel (klein)", notiz:""},
-  {id:3,  produkt:"Bohnen",       typ:"Gemüse",         form:"eingemacht",   jahr:2024, menge:5,  einheit:"Gläser (klein)", notiz:""},
-  {id:4,  produkt:"Birnen",       typ:"Früchte",        form:"getrocknet",   jahr:2025, menge:2,  einheit:"kg",             notiz:"Dörrbirnen"},
-  {id:5,  produkt:"Chäshörnli",   typ:"Gerichte",       form:"gefroren",     jahr:2026, menge:4,  einheit:"Portionen",      notiz:""},
-  {id:6,  produkt:"Erbsen",       typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:6,  einheit:"Beutel (klein)", notiz:""},
-  {id:7,  produkt:"Butter",       typ:"Milchprodukte",  form:"gefroren",     jahr:2026, menge:3,  einheit:"Stück",          notiz:""},
-  {id:8,  produkt:"Karotten",     typ:"Gemüse",         form:"eingekellert", jahr:2025, menge:15, einheit:"kg",             notiz:"Sandkiste Keller"},
-  {id:9,  produkt:"Kartoffeln",   typ:"Gemüse",         form:"eingekellert", jahr:2025, menge:40, einheit:"kg",             notiz:"Sorte Charlotte"},
-  {id:10, produkt:"Kirschen",     typ:"Früchte",        form:"eingemacht",   jahr:2024, menge:7,  einheit:"Gläser (gross)", notiz:""},
-  {id:11, produkt:"Lauch",        typ:"Gemüse",         form:"gefroren",     jahr:2026, menge:5,  einheit:"Beutel (klein)", notiz:""},
-  {id:12, produkt:"Linsen",       typ:"Trockenprodukte",form:"getrocknet",   jahr:2025, menge:2,  einheit:"kg",             notiz:""},
-  {id:13, produkt:"Minestrone",   typ:"Gerichte",       form:"eingemacht",   jahr:2025, menge:6,  einheit:"Gläser (gross)", notiz:""},
-  {id:14, produkt:"Rüebli-Suppe", typ:"Gerichte",       form:"gefroren",     jahr:2026, menge:8,  einheit:"Portionen",      notiz:""},
-  {id:15, produkt:"Tomaten",      typ:"Gemüse",         form:"eingemacht",   jahr:2025, menge:20, einheit:"Flaschen (gross)", notiz:"Passata"},
-  {id:16, produkt:"Zucchetti",    typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:6,  einheit:"Beutel (gross)", notiz:""},
-  {id:17, produkt:"Zwetschgen",   typ:"Früchte",        form:"getrocknet",   jahr:2025, menge:1.5,einheit:"kg",             notiz:""},
+  {id:1,  produkt:"Apfelmus",     typ:"Früchte",        form:"eingemacht",   jahr:2025, menge:12, einheit:"Gläser (gross)", notiz:"Gravensteiner", eingelagert_am:vorTagen(40)},
+  {id:2,  produkt:"Bohnen",       typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:8,  einheit:"Beutel (klein)", notiz:"", eingelagert_am:vorTagen(300)},
+  {id:3,  produkt:"Bohnen",       typ:"Gemüse",         form:"eingemacht",   jahr:2024, menge:5,  einheit:"Gläser (klein)", notiz:"", eingelagert_am:vorTagen(760)},
+  {id:4,  produkt:"Birnen",       typ:"Früchte",        form:"getrocknet",   jahr:2025, menge:2,  einheit:"kg",             notiz:"Dörrbirnen", eingelagert_am:vorTagen(330)},
+  {id:5,  produkt:"Chäshörnli",   typ:"Gerichte",       form:"gefroren",     jahr:2026, menge:4,  einheit:"Portionen",      notiz:"", eingelagert_am:vorTagen(60)},
+  {id:6,  produkt:"Erbsen",       typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:6,  einheit:"Beutel (klein)", notiz:"", eingelagert_am:vorTagen(280)},
+  {id:7,  produkt:"Butter",       typ:"Milchprodukte",  form:"gefroren",     jahr:2026, menge:3,  einheit:"Stück",          notiz:"", eingelagert_am:vorTagen(20)},
+  {id:8,  produkt:"Karotten",     typ:"Gemüse",         form:"eingekellert", jahr:2025, menge:15, einheit:"kg",             notiz:"Sandkiste Keller", eingelagert_am:vorTagen(340)},
+  {id:9,  produkt:"Kartoffeln",   typ:"Gemüse",         form:"eingekellert", jahr:2025, menge:40, einheit:"kg",             notiz:"Sorte Charlotte", eingelagert_am:vorTagen(345)},
+  {id:10, produkt:"Kirschen",     typ:"Früchte",        form:"eingemacht",   jahr:2024, menge:7,  einheit:"Gläser (gross)", notiz:"", eingelagert_am:vorTagen(800)},
+  {id:11, produkt:"Lauch",        typ:"Gemüse",         form:"gefroren",     jahr:2026, menge:5,  einheit:"Beutel (klein)", notiz:"", eingelagert_am:vorTagen(15)},
+  {id:12, produkt:"Linsen",       typ:"Trockenprodukte",form:"getrocknet",   jahr:2025, menge:2,  einheit:"kg",             notiz:"", eingelagert_am:vorTagen(420)},
+  {id:13, produkt:"Minestrone",   typ:"Gerichte",       form:"eingemacht",   jahr:2025, menge:6,  einheit:"Gläser (gross)", notiz:"", eingelagert_am:vorTagen(390)},
+  {id:14, produkt:"Rüebli-Suppe", typ:"Gerichte",       form:"gefroren",     jahr:2026, menge:8,  einheit:"Portionen",      notiz:"", eingelagert_am:vorTagen(25)},
+  {id:15, produkt:"Tomaten",      typ:"Gemüse",         form:"eingemacht",   jahr:2025, menge:20, einheit:"Flaschen (gross)", notiz:"Passata", eingelagert_am:vorTagen(370)},
+  {id:16, produkt:"Zucchetti",    typ:"Gemüse",         form:"gefroren",     jahr:2025, menge:6,  einheit:"Beutel (gross)", notiz:"", eingelagert_am:vorTagen(290)},
+  {id:17, produkt:"Zwetschgen",   typ:"Früchte",        form:"getrocknet",   jahr:2025, menge:1.5,einheit:"kg",             notiz:"", eingelagert_am:vorTagen(310)},
 ];
 
 // Laufzeit-Zustand
@@ -323,31 +382,90 @@ const TYP_ICON = {
 const EINHEITEN_DEMO = ["kg","Gläser (gross)","Gläser (klein)","Gefäss (gross)","Gefäss (klein)","Gefäss (mini)","Beutel (gross)","Beutel (mittel)","Beutel (klein)","Stück","Liter","Flaschen (gross)","Flaschen (klein)","Portionen"];
 let einheiten = [];
 
+// v2.1: Warnschwelle Einlagerungsdauer
+const WARN_TAGE = 365;
+let typFilter = "";      // Kachel-Auswahl (leer = alle Arten)
+let nurAlt = false;      // Schnellfilter "über 1 Jahr"
+
+// Einlagerungsdatum eines Eintrags; alte Einträge ohne Datum fallen auf erstellt_am zurück
+function einlagerDatum(d){
+  const s = d.eingelagert_am || (d.erstellt_am ? String(d.erstellt_am).slice(0,10) : "");
+  return s ? new Date(s+"T00:00:00") : null;
+}
+function tageEingelagert(d){
+  const dt=einlagerDatum(d); if(!dt) return null;
+  const h=new Date(); h.setHours(0,0,0,0);
+  return Math.floor((h-dt)/86400000);
+}
+function istAlt(d){ const t=tageEingelagert(d); return t!=null && t>WARN_TAGE; }
+function dauerText(t){
+  const m=Math.floor(t/30.44);
+  if(m>=24) return Math.floor(m/12)+" Jahren";
+  return m+" Monaten";
+}
+function chDatum(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return d+"."+m+"."+y; }
+
 // ---- Elemente ---------------------------------------------------------------
 const $ = s => document.querySelector(s);
-const listEl=$("#list"), qEl=$("#q"), fTyp=$("#fTyp"), fForm=$("#fForm"), fJahr=$("#fJahr");
+const listEl=$("#list"), qEl=$("#q"), fForm=$("#fForm"), fJahr=$("#fJahr"), tilesEl=$("#tiles");
 const overlay=$("#overlay");
 
 // ---- Filter befüllen --------------------------------------------------------
 function fillFilters(){
-  TYP_ORDER.forEach(t=>{ if(daten.some(d=>d.typ===t)){ const o=document.createElement("option");o.value=t;o.textContent=(TYP_ICON[t]||"")+" "+t;fTyp.appendChild(o);}});
   [...FORM_ORDER, ...new Set(daten.map(d=>d.form))].filter((f,i,a)=>a.indexOf(f)===i).forEach(f=>{ if(daten.some(d=>d.form===f)){ const o=document.createElement("option");o.value=f;o.textContent=f;fForm.appendChild(o);}});
   [...new Set(daten.map(d=>d.jahr))].sort((a,b)=>b-a).forEach(j=>{const o=document.createElement("option");o.value=j;o.textContent=j;fJahr.appendChild(o);});
 }
 
 // ---- Rendern ----------------------------------------------------------------
-function gefilterteRows(){
-  const q=qEl.value.trim().toLowerCase(), ft=fTyp.value, ff=fForm.value, fj=fJahr.value;
+// Basisfilter ohne Art – dient auch für die Zähler auf den Kacheln
+function basisRows(ohneTyp){
+  const q=qEl.value.trim().toLowerCase(), ff=fForm.value, fj=fJahr.value;
   return daten.filter(d=>
     (!q||d.produkt.toLowerCase().includes(q)) &&
-    (!ft||d.typ===ft) &&
+    (ohneTyp||!typFilter||d.typ===typFilter) &&
     (!ff||d.form===ff) &&
     (!fj||String(d.jahr)===fj)
-  ).sort((a,b)=> a.produkt.localeCompare(b.produkt,"de") || a.jahr-b.jahr);
+  );
+}
+function gefilterteRows(){
+  return basisRows(false).filter(d=>!nurAlt||istAlt(d))
+    .sort((a,b)=> a.produkt.localeCompare(b.produkt,"de") || a.jahr-b.jahr);
+}
+function filterAktiv(){ return !!(qEl.value.trim()||typFilter||fForm.value||fJahr.value||nurAlt); }
+
+// ---- Kacheln (Arten) --------------------------------------------------------
+function renderTiles(){
+  const basis=basisRows(true).filter(d=>!nurAlt||istAlt(d));
+  const typen=[...TYP_ORDER, ...new Set(daten.map(d=>d.typ))].filter((t,i,a)=>t&&a.indexOf(t)===i);
+  const tile=(key,icon,label,n)=>`<button type="button" class="tile${typFilter===key?" active":""}${n||key===""?"":" leer"}" data-typ="${esc(key)}" aria-pressed="${typFilter===key}">
+      <span class="ti">${icon}</span><span class="tn">${label}</span><span class="tc">${n}</span></button>`;
+  let html="";
+  typen.forEach(t=>{ html+=tile(t,TYP_ICON[t]||"📦",esc(t).replace("Trockenprodukte","Trocken&shy;produkte").replace("Milchprodukte","Milch&shy;produkte").replace("Lebensmittel","Lebens&shy;mittel"),basis.filter(d=>d.typ===t).length); });
+  html+=tile("","🗂️","Alle",basis.length);   // «Alle» bewusst an letzter Stelle
+  tilesEl.innerHTML=html;
+  tilesEl.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{
+    const t=b.dataset.typ; typFilter = (typFilter===t ? "" : t); render();
+  });
+}
+function renderFilterbar(rows){
+  $("#treffer").textContent = rows.length+(rows.length===1?" Eintrag":" Einträge");
+  $("#reset").disabled = !filterAktiv();
+  // Warnhinweis: Anzahl Einlagerungen > 1 Jahr innerhalb der übrigen Filter
+  const nAlt = basisRows(false).filter(istAlt).length;
+  const wh=$("#warnhint");
+  if(nAlt || nurAlt){
+    wh.style.display="flex";
+    wh.classList.toggle("active",nurAlt);
+    wh.innerHTML = nurAlt
+      ? `<span>⚠️ Nur Einträge über 1 Jahr eingelagert (${nAlt})</span><span class="lnk">alle zeigen</span>`
+      : `<span>⚠️ ${nAlt} ${nAlt===1?"Eintrag ist":"Einträge sind"} seit über 1 Jahr eingelagert</span><span class="lnk">anzeigen</span>`;
+  } else wh.style.display="none";
 }
 function render(){
   let rows=gefilterteRows();
 
+  renderTiles();
+  renderFilterbar(rows);
   renderStat(rows);
   listEl.innerHTML="";
   if(!rows.length){ listEl.innerHTML='<div class="empty">Keine Einträge gefunden.</div>'; return; }
@@ -356,7 +474,8 @@ function render(){
   rows.forEach(d=>{
     const L=d.produkt[0].toUpperCase();
     if(L!==letter){ letter=L; const h=document.createElement("div");h.className="letter";h.textContent=L;listEl.appendChild(h); }
-    const c=document.createElement("div");c.className="card";
+    const alt=istAlt(d);
+    const c=document.createElement("div");c.className="card"+(alt?" alt":"");
     const menge = d.menge!=="" && d.menge!=null ? `${d.menge} ${d.einheit||""}`.trim() : "";
     c.innerHTML=`
       <div class="typicon" title="${esc(d.typ)}">${TYP_ICON[d.typ]||"📦"}</div>
@@ -365,6 +484,7 @@ function render(){
         <div class="sub">
           <span class="badge form">${esc(d.form)}</span>
           <span>${d.jahr}</span>
+          ${alt?`<span class="badge warn" title="Eingelagert seit ${dauerText(tageEingelagert(d))}">⚠️ über 1 Jahr</span>`:""}
           ${d.notiz?`<span>· ${esc(d.notiz)}</span>`:""}
         </div>
       </div>
@@ -401,6 +521,9 @@ function openSheet(d){
   $("#iForm").value  = d?d.form:"gefroren";
   $("#iJahr").value  = d?d.jahr:new Date().getFullYear();
   $("#iMenge").value = d?d.menge:"";
+  // v2.1: neues Eintrag → heutiges Datum als Default
+  $("#iEingelagert").value = d ? (d.eingelagert_am || (d.erstellt_am?String(d.erstellt_am).slice(0,10):"")) : heuteIso();
+  updateDateWarn();
   const selEinheit=$("#iEinheit");
   // Falls die gespeicherte Einheit nicht (mehr) in der Liste ist (alter Eintrag,
   // deaktivierte Einheit) trotzdem anzeigen, statt sie stillschweigend zu leeren.
@@ -428,6 +551,13 @@ function openSheet(d){
   overlay.classList.add("open");
 }
 function closeSheet(){overlay.classList.remove("open");}
+function updateDateWarn(){
+  const v=$("#iEingelagert").value, w=$("#dateWarn");
+  const t = v ? tageEingelagert({eingelagert_am:v}) : null;
+  if(t!=null && t>WARN_TAGE){ w.textContent="⚠️ Seit "+dauerText(t)+" eingelagert (über 1 Jahr) – bald verbrauchen?"; w.style.display="block"; }
+  else w.style.display="none";
+}
+$("#iEingelagert").oninput=updateDateWarn;
 
 $("#add").onclick=()=>openSheet(null);
 $("#cancel").onclick=closeSheet;
@@ -442,7 +572,8 @@ $("#save").onclick=async()=>{
     typ:$("#iTyp").value, form:$("#iForm").value,
     jahr:parseInt($("#iJahr").value)||new Date().getFullYear(),
     menge:$("#iMenge").value.trim()===""?null:Number($("#iMenge").value.replace(",",".")),
-    einheit:$("#iEinheit").value, notiz:$("#iNotiz").value.trim()
+    einheit:$("#iEinheit").value, notiz:$("#iNotiz").value.trim(),
+    eingelagert_am:$("#iEingelagert").value||heuteIso()
   };
   if(sb){
     let err;
@@ -504,7 +635,8 @@ $("#dup").onclick=async()=>{
     typ:$("#iTyp").value, form:$("#iForm").value,
     jahr:parseInt($("#iJahr").value)||new Date().getFullYear(),
     menge:$("#iMenge").value.trim()===""?null:Number($("#iMenge").value.replace(",",".")),
-    einheit:$("#iEinheit").value, notiz:$("#iNotiz").value.trim()
+    einheit:$("#iEinheit").value, notiz:$("#iNotiz").value.trim(),
+    eingelagert_am:heuteIso()   // Duplikat = neue Einlagerung → heute
   };
   if(sb){
     const {error}=await sb.from("warenvorrat").insert(rec);
@@ -517,14 +649,15 @@ $("#dup").onclick=async()=>{
 };
 
 function refreshFilters(){
-  const t=fTyp.value, f=fForm.value, j=fJahr.value;
-  fTyp.innerHTML='<option value="">Alle Arten</option>';
+  const f=fForm.value, j=fJahr.value;
   fForm.innerHTML='<option value="">Alle Formen</option>';
   fJahr.innerHTML='<option value="">Alle Jahre</option>';
-  fillFilters(); fTyp.value=t; fForm.value=f; fJahr.value=j;
+  fillFilters(); fForm.value=f; fJahr.value=j;
 }
 
-qEl.oninput=render; fTyp.onchange=render; fForm.onchange=render; fJahr.onchange=render;
+qEl.oninput=render; fForm.onchange=render; fJahr.onchange=render;
+$("#warnhint").onclick=()=>{ nurAlt=!nurAlt; render(); };
+$("#reset").onclick=()=>{ qEl.value=""; typFilter=""; fForm.value=""; fJahr.value=""; nurAlt=false; render(); };
 
 // ---- CSV-Export -------------------------------------------------------------
 // Exportiert die aktuell gefilterten Einträge. Semikolon-getrennt und mit
@@ -535,8 +668,8 @@ function csvFeld(v){
 }
 $("#csv").onclick=()=>{
   const rows=gefilterteRows();
-  const kopf=["Produkt","Typ","Form","Jahr","Menge","Einheit","Notiz"];
-  const zeilen=rows.map(d=>[d.produkt,d.typ,d.form,d.jahr,d.menge,d.einheit,d.notiz].map(csvFeld).join(";"));
+  const kopf=["Produkt","Typ","Form","Jahr","Eingelagert am","Menge","Einheit","Notiz"];
+  const zeilen=rows.map(d=>[d.produkt,d.typ,d.form,d.jahr,chDatum(d.eingelagert_am||(d.erstellt_am?String(d.erstellt_am).slice(0,10):"")),d.menge,d.einheit,d.notiz].map(csvFeld).join(";"));
   const csv="﻿"+[kopf.join(";"),...zeilen].join("\r\n");
   const heute=new Date().toISOString().slice(0,10);
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
